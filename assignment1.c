@@ -2,6 +2,233 @@
 #include<string.h>
 #include<stdlib.h>
 
+void mainMenu(); 
+void menu2(); 
+void menu3(); 
+void menu4(); 
+void menu5(); 
+int isReflexive(int n, int matrix[][n]); 
+int isNonirreflexive(int n, int matrix[][n]); 
+int isSymmetric(int n, int matrix[][n]);
+int isTransitive(int n,int matrix[][n]); 
+int checkAntisymmetricforall(int n,int matrix[][n]); 
+int checkAntiSymmetric(int n, int matrix[][n]); 
+int isAllsymmetric(int n, int matrix[][n]); 
+void toReflexive(int n , int matrix[][n]); 
+void toSymmetric(int n, int matrix[][n]); 
+void toAllSymmetric(int n, int matrix[][n]);
+
+
+int main()
+{
+    FILE* fp;
+    fp = fopen("SampleInput.csv", "r");
+    if (fp == NULL) {
+      perror("Failed: ");
+      return 1;
+    }
+
+    int no_of_websites = -1;
+
+    char buffer[1000];
+    
+    while (fgets(buffer, sizeof(buffer), fp))
+    {   
+        no_of_websites++;
+    }
+    int n=no_of_websites;
+
+    int matrix[no_of_websites][no_of_websites];
+    int x = 0;
+    int y = 0;
+
+    fp = fopen("SampleInput.csv", "r");
+    fgets(buffer, sizeof(buffer), fp);
+
+    while(fgets(buffer, sizeof(buffer), fp) != NULL) {
+        char* token = strtok(buffer, ",");
+        y=0;
+  
+        while (token != NULL) {
+            if(y == 0){
+                printf("%s", token);
+                }
+                else{
+                    printf("%d", atoi(token));
+                    matrix[x][y-1] = atoi(token);
+                      
+                    }
+            y++;  
+            token = strtok(NULL, ",");
+        }
+        x++;
+        
+    }
+    printf("\n");
+    printf("%d\n", no_of_websites);
+    printf("\n");
+    for(int i = 0; i < no_of_websites; i++) {
+    for(int j = 0; j < no_of_websites; j++) {
+        printf("%d ", matrix[i][j]);
+    } 
+    printf("\n");
+    } 
+    fclose(fp);
+    printf("\n\n"); 
+
+    int key; 
+    mainmenu();
+    printf("Please enter the option number you want to exceute\n"); 
+    scanf("%d", &key);
+    
+    while(key!=9)
+    {
+        switch(key)
+        {
+            case 1: {
+                    int a=isReflexive(n, matrix);
+                    if(a == 1)
+                    {
+                        printf("YES\n"); 
+                    } 
+                    else
+                    {
+                        printf("NO\n"); 
+                        string nextstep; 
+                        menu2(); 
+                        scanf("%s", &nextstep);
+                        if(nextstep == "YES") 
+                        {
+                            //print the graph
+                        }
+                    }
+                   } 
+                break; 
+            case 2: {
+                        int b = isAllsymmetric(n,matrix);
+                        if(b == 1)
+                        {
+                           printf("YES\n"); 
+                        } 
+                        else
+                        {
+                           printf("NO\n"); 
+                           string nextstep; 
+                           menu2(); 
+                           scanf("%s", &nextstep);
+                           if(nextstep == "YES") 
+                           {
+                            //print the graph
+                           }
+                    } 
+                    }
+                    break; 
+            case 3: {}
+                    break;
+            case 4: {
+                        int d = isNonirreflexive(n, matrix);
+                        if(d == 1)
+                        {
+                            printf("YES\n");
+                        }
+                        else
+                        {
+                            printf("NO\n");
+                        }
+                    }
+                    break;
+            case 5: {
+                        int e =checkAntisymmetricforall(n,matrix); 
+                        if(e == 1)
+                        {
+                            printf("YES\n");
+                        }
+                        else
+                        {
+                            printf("NO\n");
+                        }
+                    }
+                    break;
+            case 6: {
+                        int f =checkAntiSymmetric(n,matrix); 
+                        if(f == 1)
+                        {
+                            printf("YES\n");
+                        }
+                        else
+                        {
+                            printf("NO\n");
+                        }  
+                    }
+                    break;
+            case 7: {}
+                    break;
+            case 8: {}
+                    break; 
+            default: {
+                       printf("Incorrect option selected\n");   
+                     }
+                     break;
+               
+    } 
+    mainmenu();
+    printf("Please enter the option number you want to exceute\n"); 
+    scanf("%d", &key);
+}
+return 0;
+} 
+
+void mainMenu()
+{
+    printf("MAIN MENU\n\n"); 
+    printf("1. Does every website has a link to itself");
+    printf("2. Is it possible to always return back to the previous website from the current website in one step?\n");
+    printf("3. Does every website has all the links to the websites which are reachable from it?\n");
+    printf("4. Does there exist any website that contains a link to itself?\n");
+    printf("5. Is it impossible to return to the previous website from the current website in one step?\n");
+    printf("6. Is it impossible to return to the previous website from the current website in one step(excluding the cases where the current and previous website is same)?\n");
+    printf("7. Is it possible to divide the network into multiple pieces such that every website in a piece is reachable from every other website in that piece?\n");
+    printf("8. Is this relation an example of poset?\n");
+    printf("9. Exit");
+} 
+
+void menu2()
+{
+    printf("MENU 2\n\n"); 
+    printf(" Do you want to visualise how the network will look if we add minimum links to satisfy the property?"); 
+} 
+
+void menu3()
+{
+    printf("MENU 3\n\n");
+    printf("Do you want to know the nodes in each piece? \n");
+} 
+
+void menu4()
+{
+    printf("MENU 4\n\n"); 
+    printf("1. Display the hasse diagram.\n");
+    printf("2. Display the website whose link is available in every website.\n");
+    printf("3. Display the website which has links of every website.\n");
+    printf("4. Display the websites that do not have links to any other website except itself.\n");
+    printf("5. Display the websites which can't be reached from any other website except itself.\n");
+    printf("6. Given some websites, display the websites which are reachable from all of them. \n");
+    printf("7. Given some websites, display the websites from which you can reach all those websites.\n");
+    printf("8. Is this relation an example of lattice?\n");
+    printf("9. Return to Main Menu \n");
+} 
+
+void menu5()
+{
+    printf("MENU 5\n\n");
+    printf("1. Given two websites A and B, display the website which is reachable by both A and B and can also reach to all such websites that both A and B can reach.\n");
+    printf("2. Given two websites A and B, display the website which can reach to both A and B and is also reachable from all such websites which can reach to both  A and B.\n");
+    printf("3. Is the lattice distributive?\n");
+    printf("4. Return to Menu 4\n");
+
+} 
+
+
 int isReflexive(int n, int matrix[][n])
 {
         for(int i =0; i<n; i++)
@@ -172,80 +399,4 @@ int isAllsymmetric(int n, int matrix[][n])
         }
     } 
     return 0;
-}
-
-int main()
-{
-    FILE* fp;
-    fp = fopen("SampleInput.csv", "r");
-    if (fp == NULL) {
-      perror("Failed: ");
-      return 1;
-    }
-
-    int no_of_websites = -1;
-
-    char buffer[1000];
-    
-    while (fgets(buffer, sizeof(buffer), fp))
-    {   
-        no_of_websites++;
-    }
-    int n=no_of_websites;
-
-    int matrix[no_of_websites][no_of_websites];
-    int x = 0;
-    int y = 0;
-
-    fp = fopen("SampleInput.csv", "r");
-    fgets(buffer, sizeof(buffer), fp);
-
-    while(fgets(buffer, sizeof(buffer), fp) != NULL) {
-        char* token = strtok(buffer, ",");
-        y=0;
-  
-        while (token != NULL) {
-            if(y == 0){
-                printf("%s", token);
-                }
-                else{
-                    printf("%d", atoi(token));
-                    matrix[x][y-1] = atoi(token);
-                      
-                    }
-            y++;  
-            token = strtok(NULL, ",");
-        }
-        x++;
-        
-    }
-    printf("\n");
-    printf("%d\n", no_of_websites);
-    printf("\n");
-    for(int i = 0; i < no_of_websites; i++) {
-    for(int j = 0; j < no_of_websites; j++) {
-        printf("%d ", matrix[i][j]);
-    }
-    printf("\n");
-} 
-    fclose(fp);
-    int a=checkAntiSymmetric(n,matrix);
-    int b=isSymmetric(n,matrix);
-    int c=isTransitive(n,matrix);
-    int d=isReflexive(n, matrix);
-    int e=isNonirreflexive(n, matrix); 
-    printf("\n");
-    printf("\n");
-    toReflexive(n,matrix); 
-    printf("\n");
-    printf("\n");
-    toSymmetric(n,matrix); 
-    printf("\n");
-    printf("\n");
-    toAllSymmetric(n,matrix); 
-    printf("\n");
-    printf("\n");
-  
-
-    printf("%d %d %d %d %d\n",a,b,c,d,e);
 }
