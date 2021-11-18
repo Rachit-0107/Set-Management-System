@@ -78,7 +78,7 @@ int main()
     printf("\n\n"); 
 
     int key; 
-    mainmenu();
+    mainMenu();
     printf("Please enter the option number you want to exceute\n"); 
     scanf("%d", &key);
     
@@ -95,10 +95,10 @@ int main()
                     else
                     {
                         printf("NO\n"); 
-                        string nextstep; 
+                        //string nextstep; 
                         menu2(); 
-                        scanf("%s", &nextstep);
-                        if(nextstep == "YES") 
+                        //scanf("%s", &nextstep);
+                        //if(nextstep == "YES") 
                         {
                             //print the graph
                         }
@@ -114,10 +114,10 @@ int main()
                         else
                         {
                            printf("NO\n"); 
-                           string nextstep; 
+                           //string nextstep; 
                            menu2(); 
-                           scanf("%s", &nextstep);
-                           if(nextstep == "YES") 
+                           //scanf("%s", &nextstep);
+                           //if(nextstep == "YES") 
                            {
                             //print the graph
                            }
@@ -166,7 +166,7 @@ int main()
                     break;
             case 8: {
                         int g =isPoset(n,matrix); 
-                        if(f == 1)
+                        if(g == 1)
                         {
                             printf("YES\n");
                             menu4();
@@ -183,11 +183,11 @@ int main()
                      break;
                
     } 
-    mainmenu();
-    printf("Please enter the option number you want to exceute\n"); 
+    mainMenu();
+    printf("\n\n\n\nPlease enter the option number you want to exceute\n"); 
     scanf("%d", &key);
 } 
-printf("Thank You!! :)");
+printf("Thank You!! :)\n");
 return 0;
 } 
 
@@ -202,7 +202,7 @@ void mainMenu()
     printf("6. Is it impossible to return to the previous website from the current website in one step(excluding the cases where the current and previous website is same)?\n");
     printf("7. Is it possible to divide the network into multiple pieces such that every website in a piece is reachable from every other website in that piece?\n");
     printf("8. Is this relation an example of poset?\n");
-    printf("9. Exit");
+    printf("9. Exit\n");
 } 
 
 void menu2()
@@ -418,7 +418,7 @@ int isPoset(int n, int matrix[][n])
 {
     int a = isReflexive(n,matrix); 
     int b = isTransitive(n,matrix); 
-    int c = checkAntiSymmetricforall(n,matrix); 
+    int c = checkAntisymmetricforall(n,matrix); 
      
     if(a==1 && b==1 && c==1)
     {
