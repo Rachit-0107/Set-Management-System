@@ -14,6 +14,7 @@ int isTransitive(int n,int matrix[][n]);
 int checkAntisymmetricforall(int n,int matrix[][n]); 
 int checkAntiSymmetric(int n, int matrix[][n]); 
 int isAllsymmetric(int n, int matrix[][n]); 
+int isPoset(int n, int matrix[][n]);
 void toReflexive(int n , int matrix[][n]); 
 void toSymmetric(int n, int matrix[][n]); 
 void toAllSymmetric(int n, int matrix[][n]);
@@ -163,7 +164,18 @@ int main()
                     break;
             case 7: {}
                     break;
-            case 8: {}
+            case 8: {
+                        int g =isPoset(n,matrix); 
+                        if(f == 1)
+                        {
+                            printf("YES\n");
+                            menu4();
+                        }
+                        else
+                        {
+                            printf("NO\n");
+                        }
+                    }
                     break; 
             default: {
                        printf("Incorrect option selected\n");   
@@ -174,7 +186,8 @@ int main()
     mainmenu();
     printf("Please enter the option number you want to exceute\n"); 
     scanf("%d", &key);
-}
+} 
+printf("Thank You!! :)");
 return 0;
 } 
 
@@ -399,4 +412,20 @@ int isAllsymmetric(int n, int matrix[][n])
         }
     } 
     return 0;
+} 
+
+int isPoset(int n, int matrix[][n])
+{
+    int a = isReflexive(n,matrix); 
+    int b = isTransitive(n,matrix); 
+    int c = checkAntiSymmetricforall(n,matrix); 
+     
+    if(a==1 && b==1 && c==1)
+    {
+        return 1; 
+    } 
+    else
+    {
+        return 0; 
+    }
 }
