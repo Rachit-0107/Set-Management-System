@@ -169,7 +169,55 @@ int main()
                         if(g == 1)
                         {
                             printf("YES\n");
-                            menu4();
+                            menu4(); 
+                            printf("\n\n");
+                            printf("Enter what you want to do from menu4"); 
+                            int new_key; 
+                            scanf("%d", &new_key); 
+                            switch(new_key)
+                            {
+                                case 1: {}
+                                       break; 
+                                case 2: {}
+                                       break;
+                                case 3: {}
+                                       break;
+                                case 4: {}
+                                       break; 
+                                case 5: {}
+                                       break;
+                                case 6: {}
+                                       break;
+                                case 7: {}
+                                       break;
+                                case 8: {
+                                            printf("Enter the option you want to execute from Menu 5"); 
+                                            int sub_key; 
+                                            scanf("%d", &sub_key);
+                                            switch(new_key)
+                                            {
+                                                case 1: {}
+                                                        break; 
+                                                case 2: {}
+                                                        break;
+                                                case 3: {}
+                                                        break;
+                                                case 4: {}
+                                                        break; 
+                                                default: {
+                                                            printf("You have entered an incorrect option number");
+                                                         }
+                                                         break; 
+                                                }
+                                       break;
+                                case 9: {}
+                                       break;
+                                default: {
+                                            printf("You have entered an incorrect option number");
+                                         }
+                                       break;
+                            }
+
                         }
                         else
                         {
