@@ -344,16 +344,20 @@ int isSymmetric(int n, int matrix[][n]) {
   return 1;
 }
 
-int isTransitive(int n, int matrix[][n]) {
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      for (int k = 0; k < n; k++) {
-        if ((i != j && j != k) && !(matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 1))
-          return 0;
-      }
+int isTransitive(int n,int matrix[][n]){
+      int q=1;
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++)
+            {
+                if ((i!=j && j!=k) && (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 0))
+                    q=0;
+            }
+        }
     }
-  }
-}
+    if(q==0){return 0;}
+    else return 1;
+    }
 
 int checkAntisymmetricforall(int n, int matrix[][n]) {
   for (int i = 0; i < n; i++) {
