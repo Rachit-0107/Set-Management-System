@@ -218,7 +218,7 @@ int main() {
 
 void mainMenu() {
   printf("MAIN MENU\n\n");
-  printf("1. Does every website has a link to itself");
+  printf("1. Does every website has a link to itself\n");
   printf("2. Is it possible to always return back to the previous website from the current website in one step?\n");
   printf("3. Does every website has all the links to the websites which are reachable from it?\n");
   printf("4. Does there exist any website that contains a link to itself?\n");
