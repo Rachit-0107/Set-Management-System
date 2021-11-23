@@ -397,7 +397,7 @@ int isAllsymmetric(int n, int matrix[][n]) {
 int isPoset(int n, int matrix[][n]) {
   int a = isReflexive(n, matrix);
   int b = isTransitive(n, matrix);
-  int c = checkAntisymmetricforall(n, matrix);
+  int c = checkAntisymmetric(n, matrix);
 
   if (a == 1 && b == 1 && c == 1) {
     return 1;
