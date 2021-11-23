@@ -208,8 +208,9 @@ int main()
                                                             printf("You have entered an incorrect option number");
                                                          }
                                                          break; 
-                                                }
-                                       break;
+                                             }
+                                    }   
+                                    break;
                                 case 9: {}
                                        break;
                                 default: {
