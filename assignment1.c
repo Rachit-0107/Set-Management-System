@@ -362,8 +362,12 @@ int isTransitive(int n,int matrix[][n]){
 int checkAntisymmetricforall(int n, int matrix[][n]) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
-      if (matrix[i][j] != 0 && matrix[j][i] != 0) {
+      if (matrix[i][j] != 0 && matrix[j][i] != 0 && i!=j) {
         return 0;
+      } 
+      else if(i=j)
+      {
+        ;
       }
 
     }
