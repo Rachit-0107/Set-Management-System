@@ -488,5 +488,141 @@ void extractNames(char* line, char* names[], int count){
   {
     printf("%s <-\n", names[i]);
   }
-  
+}
+
+
+void menu4_3(int n,int matrix[][n]){
+        int arr[n];
+        for(int i=0;i<n;i++){
+            arr[i]=0;
+        }
+        int sum=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                sum=sum+matrix[i][j];
+            }
+            if(sum==n){
+                arr[i]++;
+            }
+            sum=0;
+        }
+        for(int t=0;t<n;t++){
+        printf("%d ",arr[t]);
+    }
+    }
+
+    void menu4_2(int n,int matrix[][n]){
+        int arr[n];
+        for(int i=0;i<n;i++){
+            arr[i]=0;
+        }
+        int sum=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                sum=sum+matrix[j][i];
+            }
+            if(sum==n){
+                arr[i]++;
+            }
+            sum=0;
+        }
+        for(int t=0;t<n;t++){
+        printf("%d ",arr[t]);
+    }
+    }
+
+    void menu4_4(int n,int matrix[][n]){
+        int arr[n];
+        for(int i=0;i<n;i++){
+            arr[i]=0;
+        }
+        int sum=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(i!=j&&matrix[i][j]==1){
+                    sum=1;
+                    break;
+                }
+            }
+            if(sum==0){
+                    arr[i]++;
+                }
+            sum=0;    
+        }
+        for(int t=0;t<n;t++){
+        printf("%d ",arr[t]);
+    }
+    }
+    void menu4_5(int n,int matrix[][n]){
+        int arr[n];
+        for(int i=0;i<n;i++){
+            arr[i]=0;
+        }
+        int sum=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(i!=j&&matrix[j][i]==1){
+                    sum=1;
+                    break;
+                }
+            }
+            if(sum==0){
+                    arr[i]++;
+                }
+            sum=0;    
+        }
+        for(int t=0;t<n;t++){
+        printf("%d ",arr[t]);
+    }
+    }
+
+    int isSymmetric(int n, int matrix[][n]){
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (matrix[i][j] != matrix[j][i])
+            {
+                return 0;
+                break; 
+            }
+        }
+    }
+    return 1;
+    }
+
+ void transitiveClosure(int n,int graph[][n])
+{
+    int reach[n][n], i, j, k;
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            reach[i][j] = graph[i][j];
+    for (k = 0; k < n; k++)
+    {
+        for (i = 0; i < n; i++)
+        {
+            for (j = 0; j < n; j++)
+            {
+                reach[i][j] = reach[i][j] ||
+                  (reach[i][k] && reach[k][j]);
+            }
+        }
+    }
+    printSolution(n,reach);
+}
+void printSolution(int n,int reach[][n])
+{
+    printf ("Following matrix is transitive");
+    printf("closure of the given graph\n");
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+              if(i == j)
+                printf("1 ");
+              else
+                printf ("%d ", reach[i][j]);
+        }
+        printf("\n");
+    }
 }
