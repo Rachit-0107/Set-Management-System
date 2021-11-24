@@ -591,6 +591,41 @@ void menu4_3(int n,int matrix[][n]){
     return 1;
     }
 
+void menu4_6(int n,int matrix[][n],int arr[n]){
+        int arr1[n];
+        for(int i=0;i<n;i++){
+            if(arr[i]==1){arr1[i]=1;}
+            else arr1[i]=0;
+        }
+        for(int i=0;i<n;i++){
+            if(arr[i]==1){
+                for(int j=0;j<n;j++){
+                    arr1[j]=arr1[j]*matrix[i][j];
+                }
+            }
+        }
+        for(int t=0;t<n;t++){
+        printf("%d ",arr1[t]);
+    }
+    }
+
+    void menu4_7(int n,int matrix[][n],int arr[n]){
+        int arr1[n];
+        for(int i=0;i<n;i++){
+            arr1[i]=1;
+        }
+        for(int i=0;i<n;i++){
+            if(arr[i]==1){
+                for(int j=0;j<n;j++){
+                    arr1[j]=arr1[i]*matrix[j][i];
+                }
+            }
+        }
+        for(int t=0;t<n;t++){
+        printf("%d ",arr1[t]);
+    }
+    }
+
  void transitiveClosure(int n,int graph[][n])
 {
     int reach[n][n], i, j, k;
