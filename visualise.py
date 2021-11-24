@@ -1,8 +1,9 @@
-from numpy import genfromtxt
-import numpy as np
-import matplotlib.pyplot as plt
 import networkx as nx
+import matplotlib.pyplot as plt
+import numpy as np
 import sys
+from numpy import genfromtxt
+
 def get_labels(fname):
     f = open(fname,"r")
     header = f.readline()

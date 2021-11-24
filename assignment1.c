@@ -4,6 +4,10 @@
 
 #include<stdlib.h>
 
+#include"visualiser.c"
+
+#define CSV_FILE "temp.csv"
+
 void mainMenu();
 void menu2();
 void menu3();
@@ -20,6 +24,9 @@ int isPoset(int n, int matrix[][n]);
 void toReflexive(int n, int matrix[][n]);
 void toSymmetric(int n, int matrix[][n]);
 void toAllSymmetric(int n, int matrix[][n]);
+void make_csv(int n, char * names[], int matrix[][n]);
+char* stringTokenizer(char* buffer);
+void extractNames(char* line, char* names[], int count);
 
 int main() {
   FILE * fp;
@@ -42,27 +49,36 @@ int main() {
   int x = 0;
   int y = 0;
 
-  fp = fopen("SampleInput.csv", "r");
-  fgets(buffer, sizeof(buffer), fp);
+  // string array 
+  char* website_names[no_of_websites];
+  //
 
+  fp = fopen("SampleInput.csv", "r");
+  fscanf(fp, "%s", buffer);
+  // fgets(buffer, sizeof(buffer), fp);
+  extractNames(buffer, website_names, no_of_websites);
+  for (int i = 0; i < no_of_websites; i++)
+  {
+    printf("%s", website_names[i]);
+  }
+  fgets(buffer, 1000, fp);
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-    char * token = strtok(buffer, ",");
+    char* token = strtok(buffer, ",");
     y = 0;
 
     while (token != NULL) {
       if (y == 0) {
-        printf("%s", token);
       } else {
-        printf("%d", atoi(token));
         matrix[x][y - 1] = atoi(token);
-
       }
+        token = strtok(NULL, ",");
       y++;
-      token = strtok(NULL, ",");
+        
     }
     x++;
 
   }
+  
   printf("\n");
   printf("%d\n", no_of_websites);
   printf("\n");
@@ -72,6 +88,7 @@ int main() {
     }
     printf("\n");
   }
+
   fclose(fp);
   printf("\n\n");
 
@@ -232,6 +249,15 @@ void mainMenu() {
 void menu2() {
   printf("MENU 2\n\n");
   printf(" Do you want to visualise how the network will look if we add minimum links to satisfy the property?");
+  //   take input
+  int option;
+  scanf("%d", & option);
+  if (option == 1) {
+    FILE * fp;
+    fp = fopen(CSV_FILE, "w+");
+    fprintf(fp, "%s", "Rishab barnwal");
+    fclose(fp);
+  }
 }
 
 void menu3() {
@@ -400,4 +426,61 @@ int isPoset(int n, int matrix[][n]) {
   } else {
     return 0;
   }
+}
+
+void make_csv(int n, char * names[], int matrix[][n]) {
+
+  FILE * fp;
+  fp = fopen(CSV_FILE, "w+");
+  for (int i = 0; i < n; i++) {
+    fprintf(fp, ",%s", names[i]);
+    printf("%s\n", names[i]);
+  }
+  fprintf(fp, "\n");
+
+  for (int i = 0; i < n; i++) {
+
+    fprintf(fp, "%s", names[i]);
+
+    for (int j = 0; j < n; j++) {
+      fprintf(fp, ",%d", matrix[i][j]);
+    }
+
+    fprintf(fp, "\n");
+  }
+
+  fclose(fp);
+}
+
+char* stringTokenizer(char* buffer){
+  int i = 0;
+  for(i = 0; i < strlen(buffer); i++){
+    if(buffer[i] == ',') buffer[i] = '\0';
+    break;
+  }
+
+  char* temp = buffer;
+  buffer = buffer + i + 1;
+  return temp;
+}
+
+void extractNames(char* line, char* names[], int count){
+  int x = 0;
+  int len = strlen(line);
+  for(int i=0; i < len; i++){
+    if(line[i] == ','){
+      line[i] = '\0';
+    }
+  }
+  for(int i=0; i < len; i++){
+    if(line[i] == '\0'){
+      names[x] = malloc(100 * sizeof(char));
+      strcpy(names[x++], &line[i + 1]);
+    }
+  }
+  for (int i = 0; i < count; i++)
+  {
+    printf("%s <-\n", names[i]);
+  }
+  
 }

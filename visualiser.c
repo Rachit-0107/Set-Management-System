@@ -1,4 +1,7 @@
 #include<unistd.h>
+#include<stddef.h>
+#include<stdlib.h>
+
 void plot(char * fname){
     int pid;
     if((pid = fork())==0){
@@ -7,8 +10,4 @@ void plot(char * fname){
         };
     }
     exit(0);
-}
-int main(){
-    plot("mycsv.csv");
-    return 0;
 }
