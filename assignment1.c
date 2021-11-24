@@ -1,7 +1,5 @@
 #include<stdio.h>
-
 #include<string.h>
-
 #include<stdlib.h>
 
 #include"visualiser.c"
@@ -235,7 +233,7 @@ int main() {
 
 void mainMenu() {
   printf("MAIN MENU\n\n");
-  printf("1. Does every website has a link to itself");
+  printf("1. Does every website has a link to itself\n");
   printf("2. Is it possible to always return back to the previous website from the current website in one step?\n");
   printf("3. Does every website has all the links to the websites which are reachable from it?\n");
   printf("4. Does there exist any website that contains a link to itself?\n");
@@ -370,22 +368,30 @@ int isSymmetric(int n, int matrix[][n]) {
   return 1;
 }
 
-int isTransitive(int n, int matrix[][n]) {
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      for (int k = 0; k < n; k++) {
-        if ((i != j && j != k) && !(matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 1))
-          return 0;
-      }
+int isTransitive(int n,int matrix[][n]){
+      int q=1;
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++)
+            {
+                if ((i!=j && j!=k) && (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 0))
+                    q=0;
+            }
+        }
     }
-  }
-}
+    if(q==0){return 0;}
+    else return 1;
+    }
 
 int checkAntisymmetricforall(int n, int matrix[][n]) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
-      if (matrix[i][j] != 0 && matrix[j][i] != 0) {
+      if (matrix[i][j] != 0 && matrix[j][i] != 0 && i!=j) {
         return 0;
+      } 
+      else if(i=j)
+      {
+        ;
       }
 
     }
@@ -419,7 +425,7 @@ int isAllsymmetric(int n, int matrix[][n]) {
 int isPoset(int n, int matrix[][n]) {
   int a = isReflexive(n, matrix);
   int b = isTransitive(n, matrix);
-  int c = checkAntisymmetricforall(n, matrix);
+  int c = checkAntisymmetric(n, matrix);
 
   if (a == 1 && b == 1 && c == 1) {
     return 1;
