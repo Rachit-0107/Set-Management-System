@@ -1,5 +1,7 @@
 #include<stdio.h>
+
 #include<string.h>
+
 #include<stdlib.h>
 
 #include"visualiser.c"
@@ -23,8 +25,16 @@ void toReflexive(int n, int matrix[][n]);
 void toSymmetric(int n, int matrix[][n]);
 void toAllSymmetric(int n, int matrix[][n]);
 void make_csv(int n, char * names[], int matrix[][n]);
-char* stringTokenizer(char* buffer);
-void extractNames(char* line, char* names[], int count);
+char * stringTokenizer(char * buffer);
+void extractNames(char * line, char * names[], int count);
+
+void menu4_1(int n, int matrix[][n], char * names[]);
+void menu4_2(int n, int matrix[][n], char * names[]);
+void menu4_3(int n, int matrix[][n], char * names[]);
+void menu4_4(int n, int matrix[][n], char * names[]);
+void menu4_5(int n, int matrix[][n], char * names[]);
+void menu4_6(int n, int matrix[][n], int arr[n], char * names[]);
+void menu4_7(int n, int matrix[][n], int arr[n], char * names[]);
 
 int main() {
   FILE * fp;
@@ -48,35 +58,33 @@ int main() {
   int y = 0;
 
   // string array 
-  char* website_names[no_of_websites];
+  char * website_names[no_of_websites];
   //
 
   fp = fopen("SampleInput.csv", "r");
   fscanf(fp, "%s", buffer);
   // fgets(buffer, sizeof(buffer), fp);
   extractNames(buffer, website_names, no_of_websites);
-  for (int i = 0; i < no_of_websites; i++)
-  {
+  for (int i = 0; i < no_of_websites; i++) {
     printf("%s", website_names[i]);
   }
   fgets(buffer, 1000, fp);
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-    char* token = strtok(buffer, ",");
+    char * token = strtok(buffer, ",");
     y = 0;
 
     while (token != NULL) {
-      if (y == 0) {
-      } else {
+      if (y == 0) {} else {
         matrix[x][y - 1] = atoi(token);
       }
-        token = strtok(NULL, ",");
+      token = strtok(NULL, ",");
       y++;
-        
+
     }
     x++;
 
   }
-  
+
   printf("\n");
   printf("%d\n", no_of_websites);
   printf("\n");
@@ -104,10 +112,11 @@ int main() {
       } else {
         printf("NO\n");
         //string nextstep; 
-        menu2();
+        //menu2();
         //scanf("%s", &nextstep);
         //if(nextstep == "YES") 
         {
+          make_csv(no_of_websites, website_names, matrix);
           //print the graph
         }
       }
@@ -124,12 +133,29 @@ int main() {
         //scanf("%s", &nextstep);
         //if(nextstep == "YES") 
         {
+          make_csv(no_of_websites, website_names, matrix);
           //print the graph
         }
       }
     }
     break;
-    case 3: {}
+    case 3: {
+      int c = isTransitive(n, matrix);
+      if (c == 1) {
+        printf("YES\n");
+      } else {
+        printf("NO\n");
+        //string nextstep; 
+        menu2();
+        //scanf("%s", &nextstep);
+        //if(nextstep == "YES") 
+        {
+          make_csv(no_of_websites, website_names, matrix);
+          //print the graph
+        }
+      }
+
+    }
     break;
     case 4: {
       int d = isNonirreflexive(n, matrix);
@@ -166,23 +192,51 @@ int main() {
         printf("YES\n");
         menu4();
         printf("\n\n");
-        printf("Enter what you want to do from menu4");
+        printf("Enter what you want to do from menu4\n");
         int new_key;
         scanf("%d", & new_key);
         switch (new_key) {
-        case 1: {}
+        case 1: {
+          // display hasse diagram
+        }
         break;
-        case 2: {}
+        case 2: {
+          menu4_2(no_of_websites, matrix, website_names);
+          printf("rachit madarchod\n");
+          // website_names[i];
+        }
         break;
-        case 3: {}
+        case 3: {
+          menu4_3(no_of_websites, matrix, website_names);
+          printf("rachit madarchod\n");
+          // display the website whose link is to every website
+        }
         break;
-        case 4: {}
+        case 4: {
+          menu4_4(no_of_websites, matrix, website_names);
+          printf("rachit madarchod\n");
+        }
         break;
-        case 5: {}
+        case 5: {
+          menu4_5(no_of_websites, matrix, website_names);
+          printf("rachit madarchod\n");
+        }
         break;
-        case 6: {}
+        case 6: {
+          int array[no_of_websites];
+          for (int i = 0; i < n; i++) {
+            scanf("%d", & array[i]);
+          }
+          menu4_6(no_of_websites, matrix, array, website_names);
+        }
         break;
-        case 7: {}
+        case 7: {
+          int array[no_of_websites];
+          for (int i = 0; i < n; i++) {
+            scanf("%d", & array[i]);
+          }
+          menu4_7(no_of_websites, matrix, array, website_names);
+        }
         break;
         case 8: {
           printf("Enter the option you want to execute from Menu 5");
@@ -247,15 +301,6 @@ void mainMenu() {
 void menu2() {
   printf("MENU 2\n\n");
   printf(" Do you want to visualise how the network will look if we add minimum links to satisfy the property?");
-  //   take input
-  int option;
-  scanf("%d", & option);
-  if (option == 1) {
-    FILE * fp;
-    fp = fopen(CSV_FILE, "w+");
-    fprintf(fp, "%s", "Rishab barnwal");
-    fclose(fp);
-  }
 }
 
 void menu3() {
@@ -368,29 +413,27 @@ int isSymmetric(int n, int matrix[][n]) {
   return 1;
 }
 
-int isTransitive(int n,int matrix[][n]){
-      int q=1;
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++)
-            {
-                if ((i!=j && j!=k) && (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 0))
-                    q=0;
-            }
-        }
+int isTransitive(int n, int matrix[][n]) {
+  int q = 1;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      for (int k = 0; k < n; k++) {
+        if ((i != j && j != k) && (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 0))
+          q = 0;
+      }
     }
-    if(q==0){return 0;}
-    else return 1;
-    }
+  }
+  if (q == 0) {
+    return 0;
+  } else return 1;
+}
 
 int checkAntisymmetricforall(int n, int matrix[][n]) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
-      if (matrix[i][j] != 0 && matrix[j][i] != 0 && i!=j) {
+      if (matrix[i][j] != 0 && matrix[j][i] != 0 && i != j) {
         return 0;
-      } 
-      else if(i=j)
-      {
+      } else if (i = j) {
         ;
       }
 
@@ -425,7 +468,7 @@ int isAllsymmetric(int n, int matrix[][n]) {
 int isPoset(int n, int matrix[][n]) {
   int a = isReflexive(n, matrix);
   int b = isTransitive(n, matrix);
-  int c = checkAntisymmetric(n, matrix);
+  int c = checkAntiSymmetric(n, matrix);
 
   if (a == 1 && b == 1 && c == 1) {
     return 1;
@@ -458,206 +501,203 @@ void make_csv(int n, char * names[], int matrix[][n]) {
   fclose(fp);
 }
 
-char* stringTokenizer(char* buffer){
+char * stringTokenizer(char * buffer) {
   int i = 0;
-  for(i = 0; i < strlen(buffer); i++){
-    if(buffer[i] == ',') buffer[i] = '\0';
+  for (i = 0; i < strlen(buffer); i++) {
+    if (buffer[i] == ',') buffer[i] = '\0';
     break;
   }
 
-  char* temp = buffer;
+  char * temp = buffer;
   buffer = buffer + i + 1;
   return temp;
 }
 
-void extractNames(char* line, char* names[], int count){
+void extractNames(char * line, char * names[], int count) {
   int x = 0;
   int len = strlen(line);
-  for(int i=0; i < len; i++){
-    if(line[i] == ','){
+  for (int i = 0; i < len; i++) {
+    if (line[i] == ',') {
       line[i] = '\0';
     }
   }
-  for(int i=0; i < len; i++){
-    if(line[i] == '\0'){
+  for (int i = 0; i < len; i++) {
+    if (line[i] == '\0') {
       names[x] = malloc(100 * sizeof(char));
-      strcpy(names[x++], &line[i + 1]);
+      strcpy(names[x++], & line[i + 1]);
     }
   }
-  for (int i = 0; i < count; i++)
-  {
+  for (int i = 0; i < count; i++) {
     printf("%s <-\n", names[i]);
   }
 }
 
+void menu4_1(int n, int matrix[][n], char * names[]) {}
 
-void menu4_3(int n,int matrix[][n]){
-        int arr[n];
-        for(int i=0;i<n;i++){
-            arr[i]=0;
-        }
-        int sum=0;
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                sum=sum+matrix[i][j];
-            }
-            if(sum==n){
-                arr[i]++;
-            }
-            sum=0;
-        }
-        for(int t=0;t<n;t++){
-        printf("%d ",arr[t]);
+void menu4_2(int n, int matrix[][n], char * names[]) {
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    arr[i] = 0;
+  }
+  int sum = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      sum = sum + matrix[j][i];
     }
+    if (sum == n) {
+      arr[i]++;
     }
-
-    void menu4_2(int n,int matrix[][n]){
-        int arr[n];
-        for(int i=0;i<n;i++){
-            arr[i]=0;
-        }
-        int sum=0;
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                sum=sum+matrix[j][i];
-            }
-            if(sum==n){
-                arr[i]++;
-            }
-            sum=0;
-        }
-        for(int t=0;t<n;t++){
-        printf("%d ",arr[t]);
+    sum = 0;
+  }
+  for (int t = 0; t < n; t++) {
+    if (arr[t] == 1) {
+      printf("%s\n", names[t]);
     }
-    }
-
-    void menu4_4(int n,int matrix[][n]){
-        int arr[n];
-        for(int i=0;i<n;i++){
-            arr[i]=0;
-        }
-        int sum=0;
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                if(i!=j&&matrix[i][j]==1){
-                    sum=1;
-                    break;
-                }
-            }
-            if(sum==0){
-                    arr[i]++;
-                }
-            sum=0;    
-        }
-        for(int t=0;t<n;t++){
-        printf("%d ",arr[t]);
-    }
-    }
-    void menu4_5(int n,int matrix[][n]){
-        int arr[n];
-        for(int i=0;i<n;i++){
-            arr[i]=0;
-        }
-        int sum=0;
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                if(i!=j&&matrix[j][i]==1){
-                    sum=1;
-                    break;
-                }
-            }
-            if(sum==0){
-                    arr[i]++;
-                }
-            sum=0;    
-        }
-        for(int t=0;t<n;t++){
-        printf("%d ",arr[t]);
-    }
-    }
-
-    int isSymmetric(int n, int matrix[][n]){
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (matrix[i][j] != matrix[j][i])
-            {
-                return 0;
-                break; 
-            }
-        }
-    }
-    return 1;
-    }
-
-void menu4_6(int n,int matrix[][n],int arr[n]){
-        int arr1[n];
-        for(int i=0;i<n;i++){
-            if(arr[i]==1){arr1[i]=1;}
-            else arr1[i]=0;
-        }
-        for(int i=0;i<n;i++){
-            if(arr[i]==1){
-                for(int j=0;j<n;j++){
-                    arr1[j]=arr1[j]*matrix[i][j];
-                }
-            }
-        }
-        for(int t=0;t<n;t++){
-        printf("%d ",arr1[t]);
-    }
-    }
-
-    void menu4_7(int n,int matrix[][n],int arr[n]){
-        int arr1[n];
-        for(int i=0;i<n;i++){
-            arr1[i]=1;
-        }
-        for(int i=0;i<n;i++){
-            if(arr[i]==1){
-                for(int j=0;j<n;j++){
-                    arr1[j]=arr1[i]*matrix[j][i];
-                }
-            }
-        }
-        for(int t=0;t<n;t++){
-        printf("%d ",arr1[t]);
-    }
-    }
-
- void transitiveClosure(int n,int graph[][n])
-{
-    int reach[n][n], i, j, k;
-    for (i = 0; i < n; i++)
-        for (j = 0; j < n; j++)
-            reach[i][j] = graph[i][j];
-    for (k = 0; k < n; k++)
-    {
-        for (i = 0; i < n; i++)
-        {
-            for (j = 0; j < n; j++)
-            {
-                reach[i][j] = reach[i][j] ||
-                  (reach[i][k] && reach[k][j]);
-            }
-        }
-    }
-    printSolution(n,reach);
+    // printf("%d ",arr[t]);
+  }
 }
-void printSolution(int n,int reach[][n])
-{
-    printf ("Following matrix is transitive");
-    printf("closure of the given graph\n");
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-              if(i == j)
-                printf("1 ");
-              else
-                printf ("%d ", reach[i][j]);
-        }
-        printf("\n");
+
+void menu4_3(int n, int matrix[][n], char * names[]) {
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    arr[i] = 0;
+  }
+  int sum = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      sum = sum + matrix[i][j];
     }
+    if (sum == n) {
+      arr[i]++;
+    }
+    sum = 0;
+  }
+  for (int t = 0; t < n; t++) {
+    if (arr[t] == 1) {
+      printf("%s\n", names[t]);
+    }
+    // printf("%d ",arr[t]);
+  }
+}
+
+void menu4_4(int n, int matrix[][n], char * names[]) {
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    arr[i] = 0;
+  }
+  int sum = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i != j && matrix[i][j] == 1) {
+        sum = 1;
+        break;
+      }
+    }
+    if (sum == 0) {
+      arr[i]++;
+    }
+    sum = 0;
+  }
+  for (int t = 0; t < n; t++) {
+    if (arr[t] == 1) {
+      printf("%s\n", names[t]);
+    }
+    // printf("%d ",arr[t]);
+  }
+}
+void menu4_5(int n, int matrix[][n], char * names[]) {
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    arr[i] = 0;
+  }
+  int sum = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i != j && matrix[j][i] == 1) {
+        sum = 1;
+        break;
+      }
+    }
+    if (sum == 0) {
+      arr[i]++;
+    }
+    sum = 0;
+  }
+  for (int t = 0; t < n; t++) {
+    if (arr[t] == 1) {
+      printf("%s\n", names[t]);
+    }
+    // printf("%d ",arr[t]);
+  }
+}
+
+void menu4_6(int n, int matrix[][n], int arr[n], char * names[]) {
+  int arr1[n];
+  for (int i = 0; i < n; i++) {
+    if (arr[i] == 1) {
+      arr1[i] = 1;
+    } else arr1[i] = 0;
+  }
+  for (int i = 0; i < n; i++) {
+    if (arr[i] == 1) {
+      for (int j = 0; j < n; j++) {
+        arr1[j] = arr1[j] * matrix[i][j];
+      }
+    }
+  }
+  for (int t = 0; t < n; t++) {
+    if (arr[t] == 1) {
+      printf("%s\n", names[t]);
+    }
+    // printf("%d ",arr[t]);
+  }
+}
+
+void menu4_7(int n, int matrix[][n], int arr[n], char * names[]) {
+  int arr1[n];
+  for (int i = 0; i < n; i++) {
+    arr1[i] = 1;
+  }
+  for (int i = 0; i < n; i++) {
+    if (arr[i] == 1) {
+      for (int j = 0; j < n; j++) {
+        arr1[j] = arr1[i] * matrix[j][i];
+      }
+    }
+  }
+  for (int t = 0; t < n; t++) {
+    if (arr[t] == 1) {
+      printf("%s\n", names[t]);
+    }
+    // printf("%d ",arr[t]);
+  }
+}
+
+void transitiveClosure(int n, int graph[][n]) {
+  int reach[n][n], i, j, k;
+  for (i = 0; i < n; i++)
+    for (j = 0; j < n; j++)
+      reach[i][j] = graph[i][j];
+  for (k = 0; k < n; k++) {
+    for (i = 0; i < n; i++) {
+      for (j = 0; j < n; j++) {
+        reach[i][j] = reach[i][j] ||
+          (reach[i][k] && reach[k][j]);
+      }
+    }
+  }
+  printSolution(n, reach);
+}
+void printSolution(int n, int reach[][n]) {
+  printf("Following matrix is transitive");
+  printf("closure of the given graph\n");
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i == j)
+        printf("1 ");
+      else
+        printf("%d ", reach[i][j]);
+    }
+    printf("\n");
+  }
 }
