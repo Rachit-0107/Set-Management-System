@@ -23,13 +23,21 @@ void menu3();
 void menu4();
 void menu5();
 
+int max(int a, int b) {
+  if (a >= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
 int isReflexive(int n, int matrix[][n]);
 int isNonirreflexive(int n, int matrix[][n]);
 int isSymmetric(int n, int matrix[][n]);
 int isTransitive(int n, int matrix[][n]);
 
-void main_menu7(int n, int matrix[][n]);
-void menu3working(int n, int matrix[][n], int order[]);
+void main_menu7(int n, int matrix[][n], char * names[]);
+void menu3_working(int n, int connected[], char * names[]);
 
 int checkAntisymmetricforall(int n, int matrix[][n]);
 int checkAntiSymmetric(int n, int matrix[][n]);
@@ -38,19 +46,17 @@ int isPoset(int n, int matrix[][n]);
 
 void toReflexive(int n, int matrix[][n], char * names[]);
 void toSymmetric(int n, int matrix[][n], char * names[]);
-void toTransitive(int n, int graph[][n], char * names[]);
-void toAllSymmetric(int n, int matrix[][n]);
+void toTransitive(int n, int matrix[][n], char * names[]);
 void make_csv(int n, char * names[], int matrix[][n]);
 void extractNames(char * line, char * names[], int count);
 
 char * stringTokenizer(char * buffer);
 
-int dfs(int v, int n, int visited[], int matrix[][n]);
-void dfs2(int v, int n, int matrix[][n], int visited[], int component[]);
-
 bool isLattice(int n, int matrix[][n]);
+bool is_distributive(int n, int matrix[][n]);
 int option1(int n, int matrix[][n], int webA, int webB);
 int option2(int n, int matrix[][n], int webA, int webB);
+void tohasseDiagram(int n, char * names[], int matrix[][n]);
 
 void menu4_1(int n, int matrix[][n], char * names[]);
 void menu4_2(int n, int matrix[][n], char * names[]);
@@ -131,7 +137,7 @@ int main() {
     }
     break;
     case 2: {
-      int b = isAllsymmetric(n, matrix);
+      int b = isSymmetric(n, matrix);
       if (b == 1) {
         printf("YES\n");
       } else {
@@ -191,7 +197,7 @@ int main() {
     }
     break;
     case 7: {
-
+      main_menu7(no_of_websites, matrix, website_names);
     }
     break;
     case 8: {
@@ -206,7 +212,8 @@ int main() {
         switch (new_key) {
         case 1: {
           // display hasse diagram////////////////////
-          plot(SAMPLE_CSV_FILE);
+          tohasseDiagram(no_of_websites, website_names, matrix);
+
         }
         break;
         case 2: {
@@ -251,22 +258,30 @@ int main() {
             printf("Enter the option you want to execute from Menu 5");
             int sub_key;
             scanf("%d", & sub_key);
-            switch (new_key) {
+            switch (sub_key) {
             case 1: {
               int webA, webB;
               scanf("%d %d", & webA, & webB);
 
-              option1(no_of_websites, matrix, webA, webB);
+              int a = option1(no_of_websites, matrix, webA, webB);
+              printf(a); 
+
             }
             break;
             case 2: {
               int webA, webB;
               scanf("%d %d", & webA, & webB);
 
-              option2(no_of_websites, matrix, webA, webB);
+              int a = option2(no_of_websites, matrix, webA, webB);
+              printf(a);
             }
             break;
-            case 3: {}
+            case 3: {
+              if (is_distributive(no_of_websites, matrix))
+                printf("YES");
+              else
+                printf("NO");
+            }
             break;
             case 4: {}
             break;
@@ -390,24 +405,6 @@ int isNonirreflexive(int n, int matrix[][n]) {
   return 0;
 }
 
-void toAllSymmetric(int n, int matrix[][n]) {
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      if (i != j) {
-        matrix[i][j] = 1;
-      }
-    }
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      printf("%d ", matrix[i][j]);
-
-    }
-    printf("\n");
-  }
-
-}
-
 int isSymmetric(int n, int matrix[][n]) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
@@ -425,7 +422,7 @@ int isTransitive(int n, int matrix[][n]) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       for (int k = 0; k < n; k++) {
-        if ((i != j && j != k) && (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[k][i] == 0))
+        if ((i != j && j != k) && (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[i][k] == 0))
           q = 0;
       }
     }
@@ -460,17 +457,6 @@ int checkAntiSymmetric(int n, int matrix[][n]) {
   return 1;
 }
 
-int isAllsymmetric(int n, int matrix[][n]) {
-
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      if (matrix[i][j] == 1 && matrix[j][i] == 1) {
-        return 1;
-      }
-    }
-  }
-  return 0;
-}
 
 int isPoset(int n, int matrix[][n]) {
   int a = isReflexive(n, matrix);
@@ -538,82 +524,94 @@ void extractNames(char * line, char * names[], int count) {
 }
 
 // taken reference from GFG
-int dfs(int v, int n, int visited[], int matrix[][n]) {
-  int i;
-  visited[v] = 1;
-  for (i = 0; i < n; i++) {
-    if (matrix[v][i] && !visited[i]) {
-      visited[i] = 1;
-      dfs(i, n, visited, matrix);
-    }
-  }
-  return *visited;
-}
-void dfs2(int v, int n, int matrix[][n], int visited[], int component[]) {
-  int componentSize = 0;
-  component[componentSize] = v;
-  componentSize++;
-  visited[v] = 1;
+void main_menu7(int n, int matrix[][n], char * names[]) {
+  int connected[n];
+
   for (int i = 0; i < n; i++) {
-    if (matrix[i][v] == 1 && visited[i] == 0) {
-      dfs2(i, n, matrix, visited, component);
+    for (int j = 0; j < n; j++) {
+      if (matrix[i][j])
+        matrix[j][i] = 1;
     }
   }
-  return;
+  int i, j, k;
+  for (k = 0; k < n; k++)
+    for (i = 0; i < n; i++)
+      for (j = 0; j < n; j++)
+        matrix[i][j] = max(matrix[i][j], matrix[i][k] & matrix[k][j]);
+  for (int i = 0; i < n; i++) {
+    connected[i] = i;
+  }
+  for (int i = 0; i <= n; i++) {
+    for (int j = 0; j < i; j++) {
+      if (matrix[i][j]) {
+        connected[i] = connected[j];
+      }
+    }
+  }
+  int flag = 1;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (connected[i] == connected[j]) {
+        if (matrix[i][j] == 1)
+          continue;
+        else
+          flag = 0;
+      }
+    }
+  }
+  if (flag == 0) {
+    printf("No\n");
+    menu2();
+    char nextstep[4];
+    printf("\n");
+    scanf("%s", & nextstep);
+    if (strcmp(nextstep, "Yes") == 0) {
+      make_csv(n, names, matrix);
+    } else {
+      ;
+    }
+  } else {
+    printf("Yes\n");
+    menu3();
+    char nextstep[4];
+    printf("\n");
+    scanf("%s", & nextstep);
+    if (strcmp(nextstep, "Yes") == 0) {
+      menu3_working(n, connected, names);
+    } else {
+
+    }
+  }
 }
-// taken reference from GFG
-void main_menu7(int n, int matrix[][n]) {
+void menu3_working(int n, int connected[], char * names[]) {
   int visited[n];
+  int totalConnected = 0;
   for (int i = 0; i < n; i++) {
-    visited[i] = 0;
-  }
-  for (int i = 0; i < n; i++) {
-    int temp[n];
-    for (int i = 0; i < n; i++) {
-      temp[i] = 0;
+    for (int j = 0; j < n; j++) {
+      if (connected[j] == i)
+        printf("%s belongs in group %s\n", names[j], names[i]);
     }
-
-    if (visited[i] == 0) {
-      dfs(i, n, temp, matrix);
-    }
-    int j = 0;
+    printf("\n");
   }
 }
-void menu3working(int n, int matrix[][n], int order[]) {
-  int componentCount = 0;
-  char c;
-  printf("Do you want to know node in each piece?\n");
-  scanf(" %c", & c);
-
-  if (c == 'y') {
-    int visited[n];
-    for (int i = 0; i < n; i++) {
-      visited[i] = 0;
-    }
-    int prevCount = -1;
-    for (int i = n - 1; i >= 0; i--) {
-      int components[n];
-      componentSize = 0;
-      int v = order[i];
-      if (visited[v] == 0) {
-        dfs2(v, n, matrix, visited, components);
-        componentCount++;
-      }
-      if (prevCount != componentCount) {
-        printf("Component %d consist of nodes:\n", componentCount);
-        for (int i = 0; i < componentSize; i++) {
-          printf("%d ", components[i]);
-        }
-        printf("\n");
-        prevCount = componentCount;
-      }
-    }
-  }
-  return;
-}
+///////////////////////
 
 void menu4_1(int n, int matrix[][n], char * names[]) {
-  // display the hasse diagram
+  for (int i = 0; i < n; i++) {
+    matrix[i][i] = 0;
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      for (int k = 0; k < n; k++) {
+        if (i != j && j != k && i != k && matrix[i][j] == 1 && matrix[i][j] == 1) {
+          matrix[i][k] = 0;
+        }
+      }
+    }
+  }
+
+  make_csv(n, names, matrix);
 }
 
 void menu4_2(int n, int matrix[][n], char * names[]) {
@@ -714,7 +712,9 @@ void menu4_6(int n, int matrix[][n], int arr[n], char * names[]) {
   for (int i = 0; i < n; i++) {
     if (arr[i] == 1) {
       arr1[i] = 1;
-    } else arr1[i] = 0;
+    } 
+    else 
+      arr1[i] = 0;
   }
   for (int i = 0; i < n; i++) {
     if (arr[i] == 1) {
@@ -760,33 +760,17 @@ void printSolution(int n, int reach[][n]) {
   }
 }
 
-void toTransitive(int n, int graph[][n], char * names[]) {
-  int reach[n][n], i, j, k;
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++)
-      reach[i][j] = graph[i][j];
-  for (k = 0; k < n; k++) {
-    for (i = 0; i < n; i++) {
-      for (j = 0; j < n; j++) {
-        reach[i][j] = reach[i][j] ||
-          (reach[i][k] && reach[k][j]);
-      }
-    }
-  }
-  for (int i = 0; i, n; i++) {
-    for (int j = 0; j < n; j++) {
-      if (i == j) {
-        reach[i][j] = 1;
-      }
-    }
-  }
-  make_csv(n, names, reach);
-}
+void toTransitive(int n, int matrix[][n], char * names[]) {
 
-// void toHasse(int n, char * names[], int matrix[][n]){
-//   // remove reflexive 
-//   // remove symmetric
-//   make_csv(n, names, matrix);
+  for (int k = 0; k < n; k++) {
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        (matrix[i][j] = matrix[i][j]) || (matrix[i][k] && matrix[k][j]);
+      }
+    }
+  }
+  make_csv(n, names, matrix);
+}
 
 // checking if lattice
 bool isLattice(int n, int matrix[][n]) {
@@ -902,12 +886,45 @@ int option2(int n, int matrix[][n], int webA, int webB) {
   return 0;
 }
 
-void plot(char * fname){
-    int pid;
-    if((pid = fork())==0){
-        if(execlp("python", "python","visualise.py",fname,(char*)NULL)==-1){
-        	execlp("python3", "python3","visualise.py",fname,(char*)NULL);
-        };
+bool is_distributive(int n, int matrix[][n]) {
+  int b[n][n], count = 0;
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
+      b[i][j] = matrix[i][j];
+
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
+      for (int k = 0; k < n; k++) {
+        if (i != j && j != k && k != i) {
+          if (option2(n, b, i + 1, option1(n, b, j + 1, k + 1)) != option1(n, b, option2(n, b, i + 1, j + 1), option2(n, b, i + 1, k + 1)))
+            return false;
+        }
+      }
+  return true;
+}
+
+void plot(char * fname) {
+  int pid;
+  if ((pid = fork()) == 0) {
+    if (execlp("python", "python", "visualise.py", fname, (char * ) NULL) == -1) {
+      execlp("python3", "python3", "visualise.py", fname, (char * ) NULL);
+    };
+  }
+  exit(0);
+}
+
+void tohasseDiagram(int n, char * names[], int matrix[][n]) {
+  for (int i = 0; i < n; i++) {
+    matrix[i][i] = 0;
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      for (int k = 0; k < n; k++) {
+        if (i != j && j != k && i != k && matrix[i][j] == 1 && matrix[j][k] == 1) {
+          matrix[i][k] = 0;
+        }
+      }
     }
-    exit(0);
+  }
+  make_csv(n, names, matrix);
 }
